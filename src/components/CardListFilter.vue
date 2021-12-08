@@ -63,7 +63,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, onMounted, reactive } from "vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   setup(_, context) {
@@ -79,29 +80,49 @@ export default defineComponent({
       status: {
         active: true,
         inactive: true,
-        expired: true,
+        expired: false,
       },
     });
+    const store = useStore();
+
+    onMounted(() => {
+      setFilterInput();
+    });
+
+    const setFilterInput = () => {
+      state.filterInput.series =
+        store.getters["cardFilter/getCardFilterSeries"];
+      state.filterInput.number =
+        store.getters["cardFilter/getCardFilterNumber"];
+      state.filterInput.min_credit =
+        store.getters["cardFilter/getCardFilterMinCredit"];
+      state.filterInput.max_credit =
+        store.getters["cardFilter/getCardFiltermaxCredit"];
+      state.status = store.getters["cardFilter/getCardFilterStatus"];
+    };
+
+    const applyCardFilter = () => {
+      store.dispatch(
+        "cardFilter/setCardFilterSeries",
+        state.filterInput.series
+      );
+      store.dispatch(
+        "cardFilter/setCardFilterNumber",
+        state.filterInput.number
+      );
+      store.dispatch(
+        "cardFilter/setCardFilterMinCredit",
+        state.filterInput.min_credit
+      );
+      store.dispatch(
+        "cardFilter/setCardFilterMaxCredit",
+        state.filterInput.max_credit
+      );
+      store.dispatch("cardFilter/setCardFilterStatus", state.status);
+    };
     const searchHandler = () => {
-      // state.filterInput.status__in = state.filterInput.status.reduce(
-      //   (prevValue: string, currValue: string) => {
-      //     return prevValue + "," + currValue.toUpperCase();
-      //   }
-      // );
-
-      state.filterInput.status__in = "";
-      let key: keyof typeof state.status;
-      for (key in state.status) {
-        if (state.status[key]) {
-          if (state.filterInput.status__in === "") {
-            state.filterInput.status__in = key.toString().toUpperCase();
-          } else {
-            state.filterInput.status__in += "," + key.toString().toUpperCase();
-          }
-        }
-      }
-
-      context.emit("on-filter", state.filterInput);
+      applyCardFilter();
+      context.emit("update-card-list");
     };
     return {
       state,

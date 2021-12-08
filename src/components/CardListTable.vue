@@ -53,8 +53,8 @@
         <td>{{ item.series }}</td>
         <td>{{ item.number }}</td>
         <td>{{ item.credit }}</td>
-        <td>{{ item.created }}</td>
-        <td>{{ item.expiration_date }}</td>
+        <td>{{ formatDate(item.created) }}</td>
+        <td>{{ formatDate(item.expiration_date) }}</td>
         <td>{{ item.status }}</td>
         <td>
           <button class="btn-small" @click="cardDetailHandler(item.id)">
@@ -69,6 +69,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { CardInterface } from "../types";
+import { formatDate } from "@/common/formatDate";
 import TriangleUpSmall from "@/components/svg/TriangleUpSmall.vue";
 import TriangleDownSmall from "@/components/svg/TriangleDownSmall.vue";
 
@@ -86,7 +87,6 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    console.log(props.cardList);
     const hz = 2;
     const cardDetailHandler = (id: string): void => {
       context.emit("card-show-detail", id);
@@ -98,6 +98,7 @@ export default defineComponent({
       hz,
       cardDetailHandler,
       setOrderingHandler,
+      formatDate,
     };
   },
 });

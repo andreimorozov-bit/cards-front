@@ -1,27 +1,25 @@
 <template>
   <div class="cardlist">
     <div class="filters">
-      <CardListFilter @on-filter="setCardFilter" />
+      <CardListFilter @update-card-list="updateCards" />
     </div>
     <div class="content">
       <CardListTable
         @card-show-detail="detailHandler"
-        @set-ordering="setOrdering"
-        :cardList="state.cardList"
-        :orderedBy="state.cardFilter.ordering"
+        @set-ordering="setCardOrdering"
+        :cardList="cardList"
+        :orderedBy="ordering"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from "vue";
-import { getCardList } from "../api/cards";
-import { CardInterface, CardFilterInterface } from "../types";
-import { formatDate } from "../common/formatDate";
+import { computed, defineComponent, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import CardListFilter from "@/components/CardListFilter.vue";
 import CardListTable from "./CardListTable.vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "CardList",
@@ -32,52 +30,40 @@ export default defineComponent({
 
   setup() {
     const router = useRouter();
-    const state = reactive({
-      cardList: [] as CardInterface[],
-      cardFilter: {
-        series: "",
-        number: "",
-        min_credit: "",
-        max_credit: "",
-        ordering: "number",
-        status__in: "ACTIVE,INACTIVE,EXPIRED",
-      },
-    });
+    const store = useStore();
+
+    const cardList = computed(() => store.getters["cards/getCards"]);
+    const ordering = computed(
+      () => store.getters["cardFilter/getCardFilterOrdering"]
+    );
 
     onMounted(async () => {
       await getCards();
     });
+
     const getCards = async (): Promise<void> => {
-      const data = await getCardList(state.cardFilter);
-      const formattedData = data.map((item) => {
-        return {
-          ...item,
-          created: formatDate(item.created),
-          expiration_date: formatDate(item.expiration_date),
-        };
-      });
-      state.cardList = formattedData;
+      store.dispatch("cards/setCards");
     };
-    const setCardFilter = (cardFilter: CardFilterInterface): void => {
-      (state.cardFilter = cardFilter), getCards();
+
+    const updateCards = async () => {
+      await getCards();
     };
-    const setOrdering = (orderBy: string) => {
-      if (state.cardFilter.ordering === orderBy) {
-        state.cardFilter.ordering = "-" + orderBy;
-        getCards();
-        return;
-      }
-      state.cardFilter.ordering = orderBy;
-      getCards();
+
+    const setCardOrdering = async (orderBy: string) => {
+      store.dispatch("cardFilter/setCardFilterOrdering", orderBy);
+      await getCards();
     };
+
     const detailHandler = (id: string): void => {
       router.push(`/cards/${id}/`);
     };
+
     return {
-      state,
       detailHandler,
-      setCardFilter,
-      setOrdering,
+      cardList,
+      ordering,
+      updateCards,
+      setCardOrdering,
     };
   },
 });

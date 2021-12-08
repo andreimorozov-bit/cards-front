@@ -1,5 +1,8 @@
 <template>
   <div class="card-detail">
+    <div class="page-controls">
+      <button @click.prevent="handleBack" class="btn-small">Back</button>
+    </div>
     <div class="card-detail-info">
       <CardInfo :id="id" />
     </div>
@@ -17,6 +20,7 @@ import { defineComponent, onMounted, reactive } from "vue";
 import { CardInterface, PurchaseInterface } from "../types";
 import { getPurchaseList, deletePurchase } from "../api/purchases";
 import { formatDate } from "../common/formatDate";
+import { useRouter } from "vue-router";
 import CardInfo from "./CardInfo.vue";
 import PurchaseList from "./PurchaseList.vue";
 
@@ -32,19 +36,22 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const router = useRouter();
     const state = reactive({
       cardItem: {} as CardInterface,
       purchaseList: [] as PurchaseInterface[],
     });
     const hz = "lol";
-    console.log(`id from setup: ${props.id}`);
     onMounted(async () => {
       await getPurchases();
     });
 
     const getPurchases = async (): Promise<void> => {
       state.purchaseList = await getPurchaseList(props.id);
-      console.log(state.purchaseList);
+    };
+
+    const handleBack = () => {
+      router.back();
     };
 
     const handlePurchaseDelete = async (id: string): Promise<void> => {
@@ -57,6 +64,7 @@ export default defineComponent({
       state,
       formatDate,
       handlePurchaseDelete,
+      handleBack,
     };
   },
 });
@@ -70,6 +78,11 @@ export default defineComponent({
   max-width: 50rem;
   display: flex;
   flex-direction: column;
+}
+.page-controls {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem 0;
 }
 .purchases {
   margin: 1rem auto;

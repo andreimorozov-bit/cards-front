@@ -58,10 +58,10 @@ export const setCardStatus = async (
 };
 
 export const deleteCard = async (id: string): Promise<void> => {
-  const response: AxiosResponse = await axios({
+  await axios({
     method: "DELETE",
     url: `http://localhost:8000/cards/${id}/`,
   });
-  console.log(response);
+
   return;
 };
