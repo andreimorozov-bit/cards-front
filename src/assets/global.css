@@ -59,3 +59,38 @@ tr:nth-child(1) {
   background-color: #b76;
   border: 1px solid #b76;
 }
+.btn-page {
+  background-color: #cde;
+  border: 1px solid #777;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  font-family: Roboto;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0.1rem;
+  cursor: pointer;
+}
+.btn-page-active,
+.btn-page:hover {
+  background-color: #afa;
+  border: 1px solid #777;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  font-family: Roboto;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0.1rem;
+}
+.btn-dots {
+  background-color: transparent;
+  border: 1px solid transparent;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  font-family: Roboto;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0.1rem;
+}

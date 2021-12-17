@@ -1,3 +1,10 @@
+export interface CardListResponseInterface {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: CardInterface[];
+}
+
 export interface CardInterface {
   id: string;
   series: string;
@@ -40,6 +47,8 @@ export interface CreateProductDto {
 }
 
 export interface CardFilterInterface {
+  limit: string;
+  offset: string;
   series: string;
   number: string;
   min_credit: string;

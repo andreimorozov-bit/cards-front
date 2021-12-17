@@ -6,6 +6,8 @@ import { ActionTree } from "vuex";
 import { GetterTree } from "vuex";
 
 const state: CardFilterState = {
+  limit: 20,
+  offset: 0,
   series: "",
   number: "",
   min_credit: "",
@@ -20,6 +22,12 @@ const state: CardFilterState = {
 };
 
 const getters: GetterTree<CardFilterState, RootState> = {
+  getCardFilterLimit(state) {
+    return state.limit;
+  },
+  getCardFilterOffset(state) {
+    return state.offset;
+  },
   getCardFilterSeries(state) {
     return state.series;
   },
@@ -44,6 +52,12 @@ const getters: GetterTree<CardFilterState, RootState> = {
 };
 
 const mutations: MutationTree<CardFilterState> = {
+  setCardFilterLimit(state, payload: number) {
+    state.limit = payload;
+  },
+  setCardFilterOffset(state, payload: number) {
+    state.offset = payload;
+  },
   setCardFilterSeries(state, payload: string) {
     state.series = payload;
   },
@@ -68,6 +82,12 @@ const mutations: MutationTree<CardFilterState> = {
 };
 
 const actions: ActionTree<CardFilterState, RootState> = {
+  setCardFilterLimit(context, payload: number) {
+    context.commit("setCardFilterLimit", payload);
+  },
+  setCardFilterOffset(context, payload: number) {
+    context.commit("setCardFilterOffset", payload);
+  },
   setCardFilterSeries(context, payload: string) {
     context.commit("setCardFilterSeries", payload);
   },

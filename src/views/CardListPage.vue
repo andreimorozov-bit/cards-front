@@ -1,5 +1,4 @@
 <template>
-  <div>Card List Page</div>
   <CardList />
 </template>
 

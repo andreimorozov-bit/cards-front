@@ -1,5 +1,4 @@
 <template>
-  <div>Card Detail Page {{ id }}</div>
   <CardDetail :id="id" />
 </template>
 
@@ -13,13 +12,6 @@ export default defineComponent({
   },
   props: {
     id: String,
-  },
-  setup(props) {
-    const hz = "lol";
-    console.log(props);
-    return {
-      hz,
-    };
   },
 });
 </script>

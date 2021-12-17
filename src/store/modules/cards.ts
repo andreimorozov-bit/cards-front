@@ -5,6 +5,7 @@ import { getCardList } from "@/api/cards";
 import { CardFilterInterface } from "@/types";
 
 const state: CardsState = {
+  count: 0,
   cards: [],
 };
 
@@ -12,17 +13,25 @@ const mutations: MutationTree<CardsState> = {
   setCards(state, payload) {
     state.cards = payload;
   },
+  setCount(state, payload) {
+    state.count = payload;
+  },
 };
 
 const getters: GetterTree<CardsState, RootState> = {
   getCards(state) {
     return state.cards;
   },
+  getCount(state) {
+    return state.count;
+  },
 };
 
 const actions: ActionTree<CardsState, RootState> = {
   async setCards(context) {
     const cardFilterDto: CardFilterInterface = {
+      limit: context.rootGetters["cardFilter/getCardFilterLimit"],
+      offset: context.rootGetters["cardFilter/getCardFilterOffset"],
       series: context.rootGetters["cardFilter/getCardFilterSeries"],
       number: context.rootGetters["cardFilter/getCardFilterNumber"],
       min_credit: context.rootGetters["cardFilter/getCardFilterMinCredit"],
@@ -32,7 +41,8 @@ const actions: ActionTree<CardsState, RootState> = {
     };
     const data = await getCardList(cardFilterDto);
 
-    context.commit("setCards", data);
+    context.commit("setCount", data.count);
+    context.commit("setCards", data.results);
   },
 };
 

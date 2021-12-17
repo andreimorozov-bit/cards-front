@@ -1,5 +1,4 @@
 <template>
-  <div>Create Card Page</div>
   <CardCreate />
 </template>
 

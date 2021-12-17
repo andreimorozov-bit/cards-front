@@ -1,9 +1,14 @@
 import axios, { AxiosResponse } from "axios";
-import { CardInterface, CreateCardDto, CardFilterInterface } from "../types";
+import {
+  CardInterface,
+  CreateCardDto,
+  CardFilterInterface,
+  CardListResponseInterface,
+} from "../types";
 
 export const getCardList = async (
   cardFilter: CardFilterInterface
-): Promise<CardInterface[]> => {
+): Promise<CardListResponseInterface> => {
   const params: Partial<CardFilterInterface> = {};
   let key: keyof typeof cardFilter;
   for (key in cardFilter) {
@@ -11,7 +16,7 @@ export const getCardList = async (
       params[key] = cardFilter[key];
     }
   }
-  const response: AxiosResponse<CardInterface[]> = await axios({
+  const response: AxiosResponse<CardListResponseInterface> = await axios({
     method: "GET",
     url: "http://localhost:8000/cards/",
     params: params,

@@ -9,5 +9,6 @@ export interface CardInterface {
 }
 
 export interface CardsState {
+  count: number;
   cards: CardInterface[];
 }

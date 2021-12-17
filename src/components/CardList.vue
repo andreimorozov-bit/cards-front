@@ -10,6 +10,13 @@
         :cardList="cardList"
         :orderedBy="ordering"
       />
+      <Pagination
+        v-if="count > limit"
+        :count="count"
+        :offset="offset"
+        :limit="limit"
+        @set-page="setCardsOffset"
+      />
     </div>
   </div>
 </template>
@@ -19,6 +26,7 @@ import { computed, defineComponent, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import CardListFilter from "@/components/CardListFilter.vue";
 import CardListTable from "./CardListTable.vue";
+import Pagination from "@/components/Pagination.vue";
 import { useStore } from "vuex";
 
 export default defineComponent({
@@ -26,6 +34,7 @@ export default defineComponent({
   components: {
     CardListFilter,
     CardListTable,
+    Pagination,
   },
 
   setup() {
@@ -35,6 +44,13 @@ export default defineComponent({
     const cardList = computed(() => store.getters["cards/getCards"]);
     const ordering = computed(
       () => store.getters["cardFilter/getCardFilterOrdering"]
+    );
+    const count = computed(() => store.getters["cards/getCount"]);
+    const limit = computed(
+      () => store.getters["cardFilter/getCardFilterLimit"]
+    );
+    const offset = computed(
+      () => store.getters["cardFilter/getCardFilterOffset"]
     );
 
     onMounted(async () => {
@@ -46,6 +62,7 @@ export default defineComponent({
     };
 
     const updateCards = async () => {
+      store.dispatch("cardFilter/setCardFilterOffset", 0);
       await getCards();
     };
 
@@ -54,16 +71,26 @@ export default defineComponent({
       await getCards();
     };
 
+    const setCardsOffset = async (newPage: number) => {
+      const newOffset = newPage * Number(limit.value) - Number(limit.value);
+      store.dispatch("cardFilter/setCardFilterOffset", newOffset);
+      await getCards();
+    };
+
     const detailHandler = (id: string): void => {
       router.push(`/cards/${id}/`);
     };
 
     return {
-      detailHandler,
       cardList,
       ordering,
+      count,
+      limit,
+      offset,
+      detailHandler,
       updateCards,
       setCardOrdering,
+      setCardsOffset,
     };
   },
 });
@@ -88,5 +115,6 @@ export default defineComponent({
 .content {
   display: flex;
   width: 70%;
+  flex-direction: column;
 }
 </style>

@@ -39,9 +39,10 @@
           name="quantity"
           id="quantity"
           autocomplete="off"
-          v-model="state.cardInput.quantity"
+          v-model="value"
         />
       </div>
+      <span>{{ errorMessage }}</span>
       <div class="buttons-row">
         <button @click.prevent="createCardsHandler" class="btn-small">
           Create Cards
@@ -55,6 +56,8 @@
 import { defineComponent, reactive } from "vue";
 import { createCards } from "../api/cards";
 import { useRouter } from "vue-router";
+import { useField } from "vee-validate";
+import * as yup from "yup";
 
 export default defineComponent({
   setup() {
@@ -67,12 +70,20 @@ export default defineComponent({
         quantity: 1,
       },
     });
+
+    const { value, errorMessage } = useField(
+      "cardQuantity",
+      yup.string().required().max(3)
+    );
+
     const createCardsHandler = async () => {
       await createCards(state.cardInput);
       router.replace("/cards");
     };
     return {
       state,
+      value,
+      errorMessage,
       createCardsHandler,
     };
   },

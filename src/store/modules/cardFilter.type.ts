@@ -1,4 +1,6 @@
 export interface CardFilterState {
+  limit: number;
+  offset: number;
   series: string;
   number: string;
   min_credit: string;
